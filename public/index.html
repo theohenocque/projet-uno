@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNO Web</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" type="image/png" href="/assets/cards/others/back.png" />
+</head>
+<body>
+
+  <div id="toasts" class="toasts"></div>
+
+  <header id="app-header" class="app-header hidden">
+    <div class="header-brand" data-link="/lobby">
+      <span class="logo-uno">UNO</span>
+      <span class="logo-suffix">Web</span>
+    </div>
+    <nav class="header-nav">
+      <span class="user-info">
+        <span class="user-avatar"></span>
+        <span id="user-name"></span>
+      </span>
+      <button id="btn-logout" class="btn btn-ghost">Déconnexion</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- =========== PAGE D'ACCUEIL =========== -->
+    <section id="page-home" class="page page-home">
+      <div class="hero">
+        <div class="hero-cards">
+          <img src="/assets/cards/rouges/5_rouge.png" class="hero-card hero-card-1" alt="" />
+          <img src="/assets/cards/jaunes/plus2_jaune.png" class="hero-card hero-card-2" alt="" />
+          <img src="/assets/cards/bleus/skip_bleu.png" class="hero-card hero-card-3" alt="" />
+          <img src="/assets/cards/verts/reverse_vert.png" class="hero-card hero-card-4" alt="" />
+          <img src="/assets/cards/others/plus4.png" class="hero-card hero-card-5" alt="" />
+        </div>
+        <h1 class="hero-title">
+          <span class="title-uno">UNO</span><span class="title-web">.web</span>
+        </h1>
+        <p class="hero-subtitle">Le jeu de cartes culte, en ligne, avec vos amis.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" data-link="/login">Jouer maintenant</button>
+          <button class="btn btn-secondary btn-lg" data-link="/login?mode=register">Créer un compte</button>
+        </div>
+        <div class="hero-features">
+          <div class="feature">
+            <div class="feature-icon">🎮</div>
+            <h3>Multijoueur</h3>
+            <p>Jusqu'à 4 joueurs en temps réel via WebSocket.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🏠</div>
+            <h3>Système de lobby</h3>
+            <p>Créez ou rejoignez un salon en un clic.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3>Règles fidèles</h3>
+            <p>+2, +4, Joker, Skip, Inversion : tout est là.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== PAGE CONNEXION / INSCRIPTION =========== -->
+    <section id="page-login" class="page page-login hidden">
+      <div class="auth-container">
+        <button class="btn-back" data-link="/">← Retour</button>
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-mode="login">Connexion</button>
+            <button class="auth-tab" data-mode="register">Inscription</button>
+          </div>
+          <form id="auth-form" class="auth-form">
+            <h2 id="auth-title">Connexion</h2>
+            <p id="auth-error" class="auth-error hidden"></p>
+            <label>
+              <span>Nom d'utilisateur</span>
+              <input type="text" name="username" required autocomplete="username" minlength="3" maxlength="20" />
+            </label>
+            <label>
+              <span>Mot de passe</span>
+              <input type="password" name="password" required autocomplete="current-password" minlength="4" />
+            </label>
+            <button type="submit" class="btn btn-primary btn-block" id="auth-submit">Se connecter</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== PAGE LOBBY =========== -->
+    <section id="page-lobby" class="page page-lobby hidden">
+      <div class="lobby-wrapper">
+       
+        <div id="lobby-list-view" class="lobby-list-view">
+          <div class="lobby-header">
+            <h2>Salons disponibles</h2>
+            <div class="lobby-header-actions">
+              <button class="btn btn-secondary" id="btn-refresh-lobbies">↻ Actualiser</button>
+              <button class="btn btn-primary" id="btn-create-lobby">+ Créer un salon</button>
+            </div>
+          </div>
+          <div id="lobby-list" class="lobby-list">
+            <div class="lobby-empty">Aucun salon disponible. Créez-en un !</div>
+          </div>
+        </div>
+
+        <div id="lobby-room-view" class="lobby-room-view hidden">
+          <div class="room-card">
+            <div class="room-header">
+              <div>
+                <h2 id="room-name"></h2>
+                <p class="room-subtitle">En attente des joueurs...</p>
+              </div>
+              <button class="btn btn-ghost" id="btn-leave-lobby">← Quitter</button>
+            </div>
+            <div class="room-players" id="room-players"></div>
+            <div class="room-actions">
+              <button class="btn btn-secondary" id="btn-ready">Je suis prêt</button>
+              <button class="btn btn-primary hidden" id="btn-start-game">Lancer la partie</button>
+            </div>
+            <div class="room-info">
+              <strong>Comment jouer ?</strong>
+              <ul>
+                <li>Au moins 2 joueurs et tous prêts pour démarrer.</li>
+                <li>Pose une carte de même couleur ou de même valeur.</li>
+                <li>Crie UNO quand il te reste 1 carte !</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="modal-create" class="modal hidden">
+        <div class="modal-content">
+          <h3>Créer un salon</h3>
+          <label>
+            <span>Nom du salon</span>
+            <input type="text" id="new-lobby-name" maxlength="30" placeholder="Mon super salon" />
+          </label>
+          <label>
+            <span>Joueurs maximum</span>
+            <select id="new-lobby-max">
+              <option value="2">2 joueurs</option>
+              <option value="3">3 joueurs</option>
+              <option value="4" selected>4 joueurs</option>
+            </select>
+          </label>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" id="btn-cancel-create">Annuler</button>
+            <button class="btn btn-primary" id="btn-confirm-create">Créer</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+ 
+    <section id="page-game" class="page page-game hidden">
+      <div class="game-board">
+
+    
+        <div class="opponents" id="opponents"></div>
+
+       
+          <div class="game-info">
+            <div class="info-block">
+              <span class="info-label">Couleur</span>
+              <span id="current-color" class="color-indicator"></span>
+            </div>
+            <div class="info-block">
+              <span class="info-label">Sens</span>
+              <span id="direction-indicator" class="direction-indicator">→</span>
+            </div>
+            <div class="info-block">
+              <span class="info-label">Pioche</span>
+              <span id="draw-pile-count">0</span>
+            </div>
+            <div class="info-block info-pending hidden" id="pending-block">
+              <span class="info-label">+ à piocher</span>
+              <span id="pending-count">0</span>
+            </div>
+          </div>
+          <div class="piles">
+            <div class="pile-draw" id="pile-draw" title="Cliquer pour piocher">
+              <img src="/assets/cards/others/back.png" alt="Pioche" />
+              <span class="pile-label">Piocher</span>
+            </div>
+            <div class="pile-discard" id="pile-discard">
+              <img id="discard-img" src="/assets/cards/others/back.png" alt="Défausse" />
+            </div>
+          </div>
+          <div id="game-message" class="game-message"></div>
+        </div>
+
+       
+        <div class="player-area">
+          <div class="player-actions">
+            <button class="btn btn-uno" id="btn-call-uno">UNO !</button>
+            <button class="btn btn-secondary hidden" id="btn-pass">Passer mon tour</button>
+          </div>
+          <div class="my-hand" id="my-hand"></div>
+        </div>
+      </div>
+
+    
+      <div id="modal-color" class="modal hidden">
+        <div class="modal-content">
+          <h3>Choisis une couleur</h3>
+          <div class="color-choices">
+            <button class="color-btn" data-color="rouge" style="background:#ef4444">Rouge</button>
+            <button class="color-btn" data-color="jaune" style="background:#eab308">Jaune</button>
+            <button class="color-btn" data-color="vert" style="background:#22c55e">Vert</button>
+            <button class="color-btn" data-color="bleu" style="background:#3b82f6">Bleu</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="modal-round" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="round-title">Manche terminée !</h3>
+          <p id="round-text"></p>
+          <div id="round-scores" class="round-scores"></div>
+          <div class="modal-actions">
+            <button class="btn btn-primary" id="btn-next-round">Manche suivante</button>
+            <button class="btn btn-secondary hidden" id="btn-back-to-lobby">Retour aux salons</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/router.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/lobby.js"></script>
+  <script src="/js/game.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

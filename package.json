@@ -1,0 +1,17 @@
+{
+  "name": "uno-web",
+  "version": "1.0.0",
+  "description": "Jeu UNO Web multijoueur en JS sans framework",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
