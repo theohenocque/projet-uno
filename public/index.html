@@ -57,7 +57,7 @@
           </div>
           <div class="feature">
             <div class="feature-icon">⚡</div>
-            <h3>Règles fidèles</h3>
+            <h3>Merci Lucas pour ce projet</h3>
             <p>+2, +4, Joker, Skip, Inversion : tout est là.</p>
           </div>
         </div>
@@ -93,7 +93,7 @@
     <!-- =========== PAGE LOBBY =========== -->
     <section id="page-lobby" class="page page-lobby hidden">
       <div class="lobby-wrapper">
-       
+
         <div id="lobby-list-view" class="lobby-list-view">
           <div class="lobby-header">
             <h2>Salons disponibles</h2>
@@ -133,7 +133,6 @@
         </div>
       </div>
 
-
       <div id="modal-create" class="modal hidden">
         <div class="modal-content">
           <h3>Créer un salon</h3>
@@ -157,14 +156,15 @@
       </div>
     </section>
 
- 
+    <!-- =========== PAGE JEU =========== -->
     <section id="page-game" class="page page-game hidden">
       <div class="game-board">
 
-    
+        <!-- Adversaires (haut) -->
         <div class="opponents" id="opponents"></div>
 
-       
+        <!-- Centre : infos + pioche/défausse + message -->
+        <div class="game-center">
           <div class="game-info">
             <div class="info-block">
               <span class="info-label">Couleur</span>
@@ -183,6 +183,7 @@
               <span id="pending-count">0</span>
             </div>
           </div>
+
           <div class="piles">
             <div class="pile-draw" id="pile-draw" title="Cliquer pour piocher">
               <img src="/assets/cards/others/back.png" alt="Pioche" />
@@ -192,20 +193,24 @@
               <img id="discard-img" src="/assets/cards/others/back.png" alt="Défausse" />
             </div>
           </div>
+
           <div id="game-message" class="game-message"></div>
         </div>
+        <!-- FIN game-center -->
 
-       
+        <!-- Zone joueur (bas) -->
         <div class="player-area">
           <div class="player-actions">
-            <button class="btn btn-uno" id="btn-call-uno">UNO !</button>
+            <button class="btn btn-uno hidden" id="btn-call-uno">UNO !</button>
             <button class="btn btn-secondary hidden" id="btn-pass">Passer mon tour</button>
           </div>
           <div class="my-hand" id="my-hand"></div>
         </div>
-      </div>
 
-    
+      </div>
+      <!-- FIN game-board -->
+
+      <!-- Modal choix de couleur -->
       <div id="modal-color" class="modal hidden">
         <div class="modal-content">
           <h3>Choisis une couleur</h3>
@@ -218,6 +223,7 @@
         </div>
       </div>
 
+      <!-- Modal fin de manche -->
       <div id="modal-round" class="modal hidden">
         <div class="modal-content">
           <h3 id="round-title">Manche terminée !</h3>
@@ -229,7 +235,9 @@
           </div>
         </div>
       </div>
+
     </section>
+    <!-- FIN page-game -->
 
   </main>
 
